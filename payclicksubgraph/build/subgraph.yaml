@@ -1,0 +1,51 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: paybox
+    network: sepolia
+    source:
+      address: "0xF758BE839a31D6C1C701c21F9b211a2c2AD4788B"
+      abi: paybox
+      startBlock: 5127649
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AccountCreated
+      abis:
+        - name: paybox
+          file: paybox/abis/paybox.json
+      eventHandlers:
+        - event: AccountCreated(indexed address,indexed address)
+          handler: handleAccountCreated
+      file: paybox/paybox.wasm
+templates:
+  - kind: ethereum
+    name: payclickDashboard
+    network: sepolia
+    source:
+      abi: payclickDashboard
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: paybox/paybox.wasm
+      entities:
+        - tokenDeposit
+      abis:
+        - name: payclickDashboard
+          file: payclickDashboard/abis/payclickdashboard.json
+      eventHandlers:
+        - event: tokenDeposit(address,indexed uint256,uint256)
+          handler: handleTokenDeposit
+        - event: withdrawToken(address,indexed uint256,indexed address,indexed uint256)
+          handler: handleWithdrawToken
+        - event: AllAttendance(address,indexed address,string,string,string,indexed uint256)
+          handler: handleAttendance
+        - event: AmountPaidout(address,indexed uint256,indexed uint256)
+          handler: handleAmountpaidOut
+        - event: bestStaff(address,indexed string,indexed address,indexed uint256)
+          handler: handleBestStaff
